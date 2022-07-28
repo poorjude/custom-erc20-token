@@ -6,7 +6,7 @@ Main file `Custom_ERC20.sol` consists of four pieces:
 3. MyERC20Mint - Implementation of IERC20 functions and of mint functions that are not set by the standard.
 4. MyERC20MintOwnable - As declared in the name, connection of 'MyOwnable' and 'MyERC20Mint' logic, a final contract.
 
-**All contracts are provided with wide code documentation.**
+*All contracts are provided with wide code documentation.*
 
 In total, we get ERC20 token with next mint mechanism: one of the so-called owners can mint (a strictly set) amount of tokens after (a strictly set) period of time that passed after a last mint till current supply of tokens does not exceed (a strictly set) maximum supply. One of the owners can also prohibit mint at any time: after this no one will be able to mint tokens. 
 
