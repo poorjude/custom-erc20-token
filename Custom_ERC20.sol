@@ -231,7 +231,7 @@ contract MyERC20Mint is IERC20 {
  * @dev This contract connects 'MyERC20Mint' logic with 'MyOwnable' logic.
  * 
  * In this token mint function can be called by one of the owners only as well as mint prohibiting
- * function. Also, all owners are given initial tokens: as many as it is posiible to get at "usual" mint.
+ * function. Also, all owners get initial tokens: as many as it is posiible to get at "usual" mint.
  * 
  * Name of token and symbol of token are set during construction of contract.
  */
