@@ -1,4 +1,4 @@
-## My own ERC20 token (more as an experiment, than as something serious)
+## My own ERC20 token (more as an experiment)
 
 Main file `Custom_ERC20.sol` consists of four pieces:
 1. IERC20 - Interface of ERC20 token standard.
