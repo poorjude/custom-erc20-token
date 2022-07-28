@@ -8,7 +8,7 @@ Main file `Custom_ERC20.sol` consists of four pieces:
 
 All contracts are provided with wide code documentation.
 
-In total, we get ERC20 that has next mint mechanism: one of the so-called owners can mint (a strictly set) amount of tokens after (a strictly set) period of time that passed after a last mint till current supply of tokens does not exceed (a strictly set) maximum supply. One of the owners can also prohibit mint at any time: after this no one will be able to mint tokens. 
+In total, we get ERC20 token with next mint mechanism: one of the so-called owners can mint (a strictly set) amount of tokens after (a strictly set) period of time that passed after a last mint till current supply of tokens does not exceed (a strictly set) maximum supply. One of the owners can also prohibit mint at any time: after this no one will be able to mint tokens. 
 
 Owners, the amount of tokens to mint, period of time between mints, maximum supply - all of these are set individually when contract is deployed. After contract creation, all owners get initial tokens the amount of which equals the amount of tokens to usual mint.
 
