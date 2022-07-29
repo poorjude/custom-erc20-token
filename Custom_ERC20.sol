@@ -56,7 +56,8 @@ contract MyOwnable {
     */
     function _checkOwner() internal view virtual returns (bool) {
         bool isOwner;
-        for(uint256 i; i < owners.length; ) {
+        uint256 ownersLength = owners.length;
+        for(uint256 i; i < ownersLength; ) {
             if(msg.sender == owners[i]) {
                 isOwner = true;
                 break;
@@ -260,7 +261,8 @@ contract MyERC20MintOwnable is MyERC20Mint, MyOwnable {
         tokenSymbol = symbol_;
         
         // Minting tokens to all owners.
-        for (uint256 i; i < owners.length; ) {
+        uint256 ownersLength = owners.length;
+        for (uint256 i; i < ownersLength; ) {
             _mint(owners[i]);
             unchecked { ++i; }
         }
