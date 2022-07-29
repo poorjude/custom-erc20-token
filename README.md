@@ -13,3 +13,7 @@ In total, we get ERC20 token with next mint mechanism: one of the so-called owne
 Owners, the amount of tokens to mint, period of time between mints, maximum supply - all of these are set individually when contract is deployed. After contract creation, all owners get initial tokens the amount of which equals the amount of tokens for usual mint.
 
 And, of course, this token implements all ERC20 standard functions like "approve", "transfer", "balanceOf" and so on, so it's ready to interact with other tokens. Additionally, it is possible to set token name and symbol during construction of contract.
+
+**Edit: deployed this contract on Rinkeby testnet and verified its bytecode on Etherscan**
+Etherscan: https://rinkeby.etherscan.io/address/0xe34bedd60b4fedff4f7df8578929e28f4f0e6e44#code
+Contract address: 0xe34bEdd60b4FEDFF4F7df8578929E28F4F0e6E44
