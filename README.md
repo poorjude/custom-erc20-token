@@ -14,7 +14,7 @@ Owners, the amount of tokens to mint, period of time between mints, maximum supp
 
 And, of course, this token implements all ERC20 standard functions like "approve", "transfer", "balanceOf" and so on, so it's ready to interact with other tokens. Additionally, it is possible to set token name and symbol during construction of contract.
 
-**Edit: deployed this contract on Rinkeby testnet and verified its bytecode on Etherscan**
+**Edit: deployed this contract on Rinkeby testnet and verified its bytecode on Etherscan.**
 
 Etherscan: https://rinkeby.etherscan.io/address/0xe34bedd60b4fedff4f7df8578929e28f4f0e6e44#code
 
