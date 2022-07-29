@@ -22,12 +22,17 @@ interface IERC20 {
 
 
 /**
- * @title Custom version of 'Ownable'
+ * @title Custom version of 'Ownable'.
  * @dev This contract expands a standard template contract 'Ownable' with possibility
  * to have more than 1 owner. You should not use this contract if you want to have one owner
  * only: this will lead to gas overspending. It would be better to use standart 'Ownable' instead.
+ *
+ * It may seem unlogic that we use mapping and array both instead of array only, but mapping can 
+ * save a lot of gas when checking caller is one of the owners or not (we do not need to loop whole
+ * array every time).
  */
 contract MyOwnable {
+    mapping (address => bool) isOwner;
     address[] owners;
 
     /**
@@ -36,9 +41,12 @@ contract MyOwnable {
     */
     constructor(address[] memory additionalOwners_) {
         owners.push(msg.sender);
-        uint ownersLength = additionalOwners_.length;
-        for(uint i = 0; i < ownersLength; ) {
+        isOwner[msg.sender] = true;
+
+        uint256 ownersLength = additionalOwners_.length;
+        for(uint256 i; i < ownersLength; ) {
             owners.push(additionalOwners_[i]);
+            isOwner[additionalOwners_[i]] = true;
             unchecked { ++i; }
         }
     }
@@ -47,24 +55,8 @@ contract MyOwnable {
     * @dev Throws an error if caller of the function is not one of the owners.
     */
     modifier onlyOwner() virtual {
-        require(_checkOwner(), "MyOwnable: You are not one of the owners!");
+        require(isOwner[msg.sender], "MyOwnable: You are not one of the owners!");
         _;
-    }
-
-    /**
-    * @dev Checks whetner caller is one of the owners or not.
-    */
-    function _checkOwner() internal view virtual returns (bool) {
-        bool isOwner;
-        uint256 ownersLength = owners.length;
-        for(uint256 i; i < ownersLength; ) {
-            if(msg.sender == owners[i]) {
-                isOwner = true;
-                break;
-            }
-            unchecked { ++i; }
-        }
-        return isOwner;
     }
 
     /**
@@ -73,12 +65,23 @@ contract MyOwnable {
     function getOwners() external view virtual returns(address[] memory) {
         return owners;
     }
+
+    /**
+    * @notice Makes another person an owner.
+    * Requirements: caller must be an owner and `newOwner` must not be an owner.
+    *
+    * @param newOwner is an address of a new owner.
+    */
+    function addOwner(address newOwner) external virtual onlyOwner() {
+        require(!isOwner[newOwner], "MyOwnable: This address is already an owner!");
+        owners.push(newOwner);
+        isOwner[newOwner] = true;
+    }
 }
 
 
-
 /**
- * @title Contract with custom mint functions (and not only).
+ * @title ERC20 token with custom mint functions (and not only).
  * @dev This contract implements all functions of IERC20 and has mint functions that are not set by 
  * the standard.
  *
@@ -237,12 +240,11 @@ contract MyERC20Mint is IERC20 {
  * Name of token and symbol of token are set during construction of contract.
  */
 contract MyERC20MintOwnable is MyERC20Mint, MyOwnable {
-
     string public tokenName;
     string public tokenSymbol;
 
     /**
-    * @dev Sets name and symbol of token, gives owners initial amount of tokens.
+    * @dev Sets name and symbol of token, gives initial amount of tokens to owners.
     * 
     * @param name_ sets name of token.
     * @param symbol_ sets symbol of token.
