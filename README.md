@@ -23,7 +23,7 @@ And, of course, this token implements all ERC20 standard functions like "approve
 
 File `CustomERC20.test.js` in folder `test` contains full-coverage unit tests written in JS for our contract.
 
-To run them, you need pre-installed Node.js with NPM and do the next things:
+To run them, you need to have pre-installed Node.js with NPM and do the next things:
 - download all files from this page to a separate folder,
 - create new terminal and open the folder with downloaded files in it,
 - type in `npm install --save-dev hardhat` and wait till the end of installation,
