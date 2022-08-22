@@ -32,7 +32,7 @@ To run them, you need to have pre-installed Node.js with NPM and do the next thi
 
 ### The deployed contract
 
-I deployed the main contract on Rinkeby testnet and verified its bytecode on Etherscan.
+The main contract was deployed on Rinkeby testnet and its bytecode was verified on Etherscan.
 
 Etherscan: https://rinkeby.etherscan.io/address/0xe34bedd60b4fedff4f7df8578929e28f4f0e6e44#code
 
