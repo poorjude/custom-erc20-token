@@ -76,7 +76,7 @@ describe("My ERC20 token", function() {
         it("Should be deployed", async function() {
             const { token } = await loadFixture(deployToken);
  
-            expect(token.address).not.to.undefined;
+            await expect(token.address).not.to.undefined;
         });
 
         it("Should set the right name of token", async function() {
@@ -118,7 +118,7 @@ describe("My ERC20 token", function() {
                 expect(ownersAddresses).to.include(eachOwner.address);
             }
 
-            expect(ownersAddresses.length).to.equal(owners.length);
+            await expect(ownersAddresses.length).to.equal(owners.length);
         });
 
         it("Should assign right amount of tokens to the owners", async function() {
@@ -151,12 +151,12 @@ describe("My ERC20 token", function() {
                 let from = owners[0].address;
                 let to = owners[1].address;
                 
-                expect(token.transfer(to, 1))
+                await expect(token.transfer(to, 1))
                 .to.changeTokenBalances(token, [from, to], [-1, 1]);
 
                 [from, to] = [to, from];
 
-                expect(token.connect(owners[1]).transfer(to, 2))
+                await expect(token.connect(owners[1]).transfer(to, 2))
                 .to.changeTokenBalances(token, [from, to], [-2, 2]);
             });
 
@@ -166,11 +166,11 @@ describe("My ERC20 token", function() {
                 let from = owners[0].address;
                 let to = owners[1].address;
                 
-                expect(token.transfer(to, 1)).to.emit(token, "Transfer");
+                await expect(token.transfer(to, 1)).to.emit(token, "Transfer");
 
                 [from, to] = [to, from];
 
-                expect(token.connect(owners[1]).transfer(to, 2)).to.emit(token, "Transfer");
+                await expect(token.connect(owners[1]).transfer(to, 2)).to.emit(token, "Transfer");
             });
 
             it("Should revert if there is not enough tokens", async function() {
@@ -179,12 +179,12 @@ describe("My ERC20 token", function() {
                 let from = nonOwners[0].address;
                 let to = nonOwners[1].address;
                 
-                expect(token.transfer(to, 10000000))
+                await expect(token.transfer(to, 10000000))
                 .to.be.revertedWith("MyERC20: Not enough tokens for `transfer`!");
 
                 [from, to] = [to, from];
 
-                expect(token.connect(owners[1]).transfer(to, 20000000))
+                await expect(token.connect(owners[1]).transfer(to, 20000000))
                 .to.be.revertedWith("MyERC20: Not enough tokens for `transfer`!");
             });
         });
@@ -216,12 +216,12 @@ describe("My ERC20 token", function() {
                 let spender = owners[1].address;
                 let amount = 200;
                 
-                expect(token.approve(spender, amount)).to.emit(token, "Approval");
+                await expect(token.approve(spender, amount)).to.emit(token, "Approval");
 
                 [approver, spender] = [spender, approver];
                 amount = 400;
 
-                expect(token.connect(owners[1]).approve(spender, amount)).to.emit(token, "Approval");
+                await expect(token.connect(owners[1]).approve(spender, amount)).to.emit(token, "Approval");
             });
 
             it("Should transfer approved tokens", async function() {
@@ -231,17 +231,18 @@ describe("My ERC20 token", function() {
                 let spender = owners[1].address;
                 let amount = 200;
                 
-                await token.approve(spender, amount);
+                await token.connect(owners[0]).approve(spender, amount);
 
-                expect(token.transferFrom(approver, spender, amount))
+                await expect(token.connect(owners[1]).transferFrom(approver, spender, amount))
                 .to.changeTokenBalances(token, [approver, spender], [-amount, amount]);
 
-                [approver, spender] = [spender, approver];
+                approver = owners[1].address;
+                spender = owners[0].address;
                 amount = 400;
 
                 await token.connect(owners[1]).approve(spender, amount);
 
-                expect(token.transferFrom(approver, spender, amount))
+                await expect(token.connect(owners[0]).transferFrom(approver, spender, amount))
                 .to.changeTokenBalances(token, [approver, spender], [-amount, amount]);
             });
 
@@ -304,7 +305,7 @@ describe("My ERC20 token", function() {
                 
                 await token.approve(spender, amount);
 
-                expect(token.transferFrom(approver, spender, amount + 1))
+                await expect(token.transferFrom(approver, spender, amount + 1))
                 .to.be.revertedWith("MyERC20: Not enough approved tokens for `transferFrom`!");
 
                 [approver, spender] = [spender, approver];
@@ -312,20 +313,21 @@ describe("My ERC20 token", function() {
 
                 await token.connect(owners[1]).approve(spender, amount);
 
-                expect(token.transferFrom(approver, spender, amount + 2))
+                await expect(token.transferFrom(approver, spender, amount + 2))
                 .to.be.revertedWith("MyERC20: Not enough approved tokens for `transferFrom`!");
             });
 
-            it("Should revert if there is not enough tokens on balance of approver", async function() {
+            it(`Should revert if there is not enough tokens
+                                            on balance of approver`, async function() {
                 const { token, owners } = await loadFixture(deployToken);
 
                 let approver = owners[0].address;
                 let spender = owners[1].address;
                 let amount = 20000000;
                 
-                await token.approve(spender, amount);
+                await token.connect(owners[0]).approve(spender, amount);
 
-                expect(token.transferFrom(approver, spender, amount))
+                await expect(token.connect(owners[1]).transferFrom(approver, spender, amount))
                 .to.be.revertedWith("MyERC20: Not enough tokens for `transfer`!");
 
                 [approver, spender] = [spender, approver];
@@ -333,7 +335,7 @@ describe("My ERC20 token", function() {
 
                 await token.connect(owners[1]).approve(spender, amount);
 
-                expect(token.transferFrom(approver, spender, amount))
+                await expect(token.connect(owners[0]).transferFrom(approver, spender, amount))
                 .to.be.revertedWith("MyERC20: Not enough tokens for `transfer`!");
             });
         });
@@ -355,7 +357,7 @@ describe("My ERC20 token", function() {
                 
                 let newOwner = owners[0].address;
     
-                expect(token.addOwner(newOwner))
+                await expect(token.addOwner(newOwner))
                 .to.be.revertedWith("MyOwnable: This address is already an owner!");
             });
     
@@ -364,7 +366,7 @@ describe("My ERC20 token", function() {
                 
                 let newOwner = nonOwners[0].address;
     
-                expect(token.connect(nonOwners[0]).addOwner(newOwner))
+                await expect(token.connect(nonOwners[0]).addOwner(newOwner))
                 .to.be.revertedWith("MyOwnable: You are not one of the owners!");
             });
         });
@@ -375,7 +377,7 @@ describe("My ERC20 token", function() {
                 
                 let ownerAddress = owners[0].address;
     
-                expect(token.mint(ownerAddress))
+                await expect(token.mint(ownerAddress))
                 .to.changeTokenBalance(token, ownerAddress, amountToMint_);
             });
     
@@ -384,7 +386,7 @@ describe("My ERC20 token", function() {
     
                 let nonOwner = nonOwners[0];
     
-                expect(token.connect(nonOwner).mint(nonOwner.address))
+                await expect(token.connect(nonOwner).mint(nonOwner.address))
                 .to.be.revertedWith("MyOwnable: You are not one of the owners!");
             });
 
@@ -393,22 +395,25 @@ describe("My ERC20 token", function() {
                 
                 let ownerAddress = owners[0].address;
     
-                expect(token.mint(ownerAddress))
+                await expect(token.mint(ownerAddress))
                 .to.changeTokenBalance(token, ownerAddress, amountToMint_);
 
-                expect(token.mint(ownerAddress))
+                await expect(token.mint(ownerAddress))
                 .to.be.revertedWith("MyMint: You reached maximum supply!");
             });
 
             it("Should not allow to mint new tokens if time has not passed yet", async function() {
-                const { token, owners, amountToMint_ } = await loadFixture(deployTokenWithLargeMintInt);
+                const { token, owners, amountToMint_, intervalOfMint_ } = await loadFixture(deployTokenWithLargeMintInt);
                 
+                await ethers.provider.send("evm_increaseTime", [intervalOfMint_ + 1]);
+                await ethers.provider.send("evm_mine");
+
                 let ownerAddress = owners[0].address;
-    
-                expect(token.mint(ownerAddress))
+
+                await expect(token.mint(ownerAddress))
                 .to.changeTokenBalance(token, ownerAddress, amountToMint_);
 
-                expect(token.mint(ownerAddress))
+                await expect(token.mint(ownerAddress))
                 .to.be.revertedWith("MyMint: It is too early to mint yet!");
             });
         });
@@ -423,20 +428,20 @@ describe("My ERC20 token", function() {
             });
 
             it("Should not allow mint after mint prohibiting", async function() {
-                const { token } = await loadFixture(deployToken);
+                const { token, owners } = await loadFixture(deployToken);
                 
                 await token.prohibitMint();
     
-                expect(token.mint())
+                await expect(token.mint(owners[0].address))
                 .to.be.revertedWith("MyMint: Mint is not allowed anymore!");
             });
 
             it("Should not allow non-owners to prohibit mint", async function() {
                 const { token, nonOwners } = await loadFixture(deployToken);
                 
-                expect(token.connect(nonOwners[0]).prohibitMint())
+                await expect(token.connect(nonOwners[0]).prohibitMint())
                 .to.be.revertedWith("MyOwnable: You are not one of the owners!");
             });
         });
     });
-})
+});
