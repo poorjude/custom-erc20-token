@@ -180,7 +180,7 @@ contract MyERC20Mint is IERC20 {
     *
     * @dev If not overridden, anyone could call this function.
     */
-    function mint(address to) external virtual mintLimitation {
+    function mint(address to) public virtual mintLimitation {
         _mint(to);
         lastTimeMinted = uint64(block.timestamp);
     }
@@ -190,7 +190,7 @@ contract MyERC20Mint is IERC20 {
     *
     * @dev If not overridden, anyone could call this function.
     */
-    function prohibitMint() external virtual {
+    function prohibitMint() public virtual {
         allowMint = false;
     }
 
@@ -274,15 +274,14 @@ contract MyERC20MintOwnable is MyERC20Mint, MyOwnable {
     /**
     * @dev Override {MyERC20Mint-mint} with `onlyOwner` modifier.
     */
-    function mint(address to) external override mintLimitation onlyOwner {
-        _mint(to);
-        lastTimeMinted = uint64(block.timestamp);
+    function mint(address to) public override onlyOwner {
+        super.mint(to);
     }
 
     /**
     * @dev Override {MyERC20Mint-prohibitMint} with `onlyOwner` modifier.
     */
-    function prohibitMint() external override onlyOwner {
-        allowMint = false;
+    function prohibitMint() public override onlyOwner {
+        super.prohibitMint();
     }
 }
