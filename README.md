@@ -3,7 +3,7 @@
 
 ### Contracts
 
-Main file `CustomERC20.sol` in folder `contracts` consists of four pieces:
+The folder `contracts` contains four contracts:
 1. IERC20 - Interface of ERC20 token standard.
 2. MyOwnable - Version of 'Ownable' pattern but with many owners.
 3. MyERC20Mint - Implementation of IERC20 functions and of mint functions that are not set by the standard.
